@@ -1,0 +1,62 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-expand-candlestick-pattern-detection-engine-in-frontend-src-lib-analytics-ts-to-recognize-12-additional-patterns-inverse-hammer-piercing-line-morning-star-three-white-soldiers-dragonfly-doji-bullish-category-hanging-man-evening-star-three-black-crows-dark-cloud-cover-gravestone-doji-bearish-category-doji-spinning-top-neutral-category",
+      "featureTitle": "Expand candlestick pattern detection engine in frontend/src/lib/analytics.ts to recognize 12 additional patterns: Inverse Hammer, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji (bullish category); Hanging Man, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji (bearish category); Doji, Spinning Top (neutral category)",
+      "files": [
+        "frontend/src/lib/analytics.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-26"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-categorize-all-detected-candlestick-patterns-in-candleanalysisview-into-three-distinct-sections-bullish-candles-hammer-inverse-hammer-bullish-engulfing-piercing-line-morning-star-three-white-soldiers-dragonfly-doji-with-green-styling-and-buy-long-setup-bias-indicator-bearish-candles-hanging-man-shooting-star-bearish-engulfing-evening-star-three-black-crows-dark-cloud-cover-gravestone-doji-with-red-styling-and-sell-short-setup-bias-indicator-and-neutral-candles-doji-spinning-top-with-gray-white-styling-and-wait-no-trade-bias-indicator",
+      "featureTitle": "Categorize all detected candlestick patterns in CandleAnalysisView into three distinct sections: Bullish Candles (Hammer, Inverse Hammer, Bullish Engulfing, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji) with green styling and 'BUY/LONG Setup' bias indicator, Bearish Candles (Hanging Man, Shooting Star, Bearish Engulfing, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji) with red styling and 'SELL/SHORT Setup' bias indicator, and Neutral Candles (Doji, Spinning Top) with gray/white styling and 'WAIT/NO TRADE' bias indicator",
+      "files": [
+        "frontend/src/views/CandleAnalysisView.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-27"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-candleanalysisview-to-display-category-descriptions-expect-upside-reversal-continuation-for-bullish-section-indicating-buying-pressure-expect-downside-reversal-continuation-for-bearish-section-indicating-selling-pressure-and-indecision-sideways-for-neutral-section-indicating-market-confusion-requiring-confirmation",
+      "featureTitle": "Update CandleAnalysisView to display category descriptions: 'Expect Upside Reversal / Continuation' for bullish section indicating buying pressure, 'Expect Downside Reversal / Continuation' for bearish section indicating selling pressure, and 'Indecision / Sideways' for neutral section indicating market confusion requiring confirmation",
+      "files": [
+        "frontend/src/views/CandleAnalysisView.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "authorization@4.0.0"
+      ],
+      "testIds": [
+        "REQ-28"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Expand candlestick pattern detection with 12 additional patterns and categorize all patterns into Bullish/Bearish/Neutral types",
+  "requirements": [
+    {
+      "id": "REQ-26",
+      "summary": "Expand candlestick pattern detection engine to recognize 12 additional patterns with categorization",
+      "acceptanceCriteria": [
+        "Pattern detection functions return pattern name and category (bullish/bearish/neutral) for all 12 new patterns",
+        "Inverse Hammer detection checks for small body at top with long lower wick",
+        "Piercing Line detection identifies bullish two-candle pattern where second candle closes above midpoint of first bearish candle",
+        "Morning Star detection recognizes three-candle bullish reversal pattern",
+        "Three White Soldiers detection identifies three consecutive long bullish candles",
+        "Dragonfly Doji detection checks for Doji with long lower wick and no upper wick at support levels",
+        "Hanging Man detection identifies bearish pattern with small body at top and long lower wick",
+        "Evening Star detection recognizes three-candle bearish reversal pattern",
+        "Three Black Crows detection identifies three consecutive long bearish candles",
+        "Dark Cloud Cover detection identifies bearish two-candle pattern where second candle opens above first and closes below midpoint",
+        "Gravestone Doji detection checks for Doji with long upper wick and no lower wick at resistance levels",
+        "Doji detection identifies candles with nearly equal open and close prices",
+        "Spinning Top detection identifies small body with upper and lower wicks showing indecision"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/analytics.ts",
+          "operation": "modify",
+          "description": "Add 12 new candlestick pattern detection functions (Inverse Hammer, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji, Hanging Man, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji, Doji, Spinning Top) to the detectCandlestickPatterns function. Each pattern detection should return an object with patternType and category fields where category is 'bullish', 'bearish', or 'neutral'. Preserve existing detection logic for Hammer, Shooting Star, Bullish Engulfing, and Bearish Engulfing patterns. Update the CandlestickPattern type to include a category field if not already present."
+        }
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "summary": "Categorize detected patterns into three sections with color-coded bias indicators",
+      "acceptanceCriteria": [
+        "CandleAnalysisView displays three separate card sections labeled 'Bullish Candles', 'Bearish Candles', and 'Neutral Candles'",
+        "Bullish section uses green accent colors and displays '👉 Bias: BUY / LONG Setup' indicator",
+        "Bearish section uses red accent colors and displays '👉 Bias: SELL / SHORT Setup' indicator",
+        "Neutral section uses gray/white accent colors and displays '👉 Bias: WAIT / NO TRADE until breakout' indicator",
+        "Each section lists stocks with detected patterns matching that category",
+        "Pattern names are displayed with corresponding emoji indicators (🟢 for bullish, 🔴 for bearish, ⚪ for neutral)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/views/CandleAnalysisView.tsx",
+          "operation": "modify",
+          "description": "Replace the existing two-card layout (bullish/bearish) with three distinct card sections: Bullish Candles (green styling with 'BUY / LONG Setup' bias), Bearish Candles (red styling with 'SELL / SHORT Setup' bias), and Neutral Candles (gray/white styling with 'WAIT / NO TRADE until breakout' bias). Filter and display patterns based on their category property from analytics.ts. Add emoji indicators (🟢 for bullish, 🔴 for bearish, ⚪ for neutral) to pattern names. Ensure the layout maintains visual consistency with the existing dashboard design."
+        }
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "summary": "Add category descriptions to each pattern section",
+      "acceptanceCriteria": [
+        "Bullish section header includes subtitle 'Expect Upside Reversal / Continuation' with 'These indicate buying pressure' description",
+        "Bearish section header includes subtitle 'Expect Downside Reversal / Continuation' with 'These indicate selling pressure' description",
+        "Neutral section header includes subtitle 'Indecision / Sideways' with 'Market confusion – wait for confirmation' description",
+        "Descriptions are visually distinct from pattern listings using typography hierarchy"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/views/CandleAnalysisView.tsx",
+          "operation": "modify",
+          "description": "Add descriptive headers to each of the three pattern category sections. Bullish section should display 'Expect Upside Reversal / Continuation' subtitle with 'These indicate buying pressure' description. Bearish section should display 'Expect Downside Reversal / Continuation' subtitle with 'These indicate selling pressure' description. Neutral section should display 'Indecision / Sideways' subtitle with 'Market confusion – wait for confirmation' description. Use typography hierarchy (heading size, weight, or color) to visually distinguish descriptions from pattern listings."
+        }
+      ]
+    }
+  ]
+}

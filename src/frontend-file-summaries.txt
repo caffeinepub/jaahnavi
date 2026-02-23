@@ -1,0 +1,23 @@
+{
+  "frontend/src/App.tsx": "Main application component managing authentication state, signup/login view toggling, view routing, and layout composition with sidebar, header, news ticker, and dynamic view rendering.",
+  "frontend/src/components/LoginScreen.tsx": "Login authentication component with username/password inputs, simulated authentication validation, and a sign-up link that triggers navigation to the signup screen.",
+  "frontend/src/components/Sidebar.tsx": "Navigation sidebar component displaying brand header, 9 navigation items with icons (using CandlestickChart instead of Candle), active state highlighting, and admin panel footer.",
+  "frontend/src/components/Header.tsx": "Top header bar with live market time display, global symbol search input, and logout button.",
+  "frontend/src/components/NewsTicker.tsx": "Horizontal auto-scrolling news ticker displaying market headlines with LIVE badges using CSS animation.",
+  "frontend/src/views/Dashboard.tsx": "Dashboard view displaying market indices cards, FII/DII cash flow data, market breadth statistics, and candlestick chart.",
+  "frontend/src/views/OptionChainView.tsx": "Comprehensive option chain analyzer with 28-column table showing CE/PE data, best strike recommendations, and symbol selector dropdown.",
+  "frontend/src/views/WatchlistView.tsx": "Watchlist management view displaying saved symbols in table format with price, change data, and remove functionality.",
+  "frontend/src/views/FOListView.tsx": "Complete F&O stocks list view showing all stocks with price, change, volume data, and add-to-watchlist buttons.",
+  "frontend/src/views/BullishScannerView.tsx": "Bullish pattern scanner displaying F&O stocks where Open equals Low (bullish indicator), filtered to show only stocks with current price within 0.5% proximity of the Open=Low level, with proximity percentage column.",
+  "frontend/src/views/BearishScannerView.tsx": "Bearish pattern scanner displaying F&O stocks where Open equals High (bearish indicator), filtered to show only stocks with current price within 0.5% proximity of the Open=High level, with proximity percentage column.",
+  "frontend/src/views/CandleAnalysisView.tsx": "Candlestick pattern analysis view displaying three categorized sections (Bullish, Bearish, Neutral) with color-coded cards, descriptive headers explaining each category's trading bias, pattern badges for detected formations, and a pattern chart component with full OHLC data generation for pattern detection.",
+  "frontend/src/views/SectorsView.tsx": "Sector performance view displaying cards for six major NIFTY sector indices with percentage changes and strength indicators.",
+  "frontend/src/views/NewsFeedView.tsx": "News feed page displaying market headlines in card format with newspaper icons and read analysis buttons.",
+  "frontend/src/components/CandlestickChart.tsx": "Canvas-based candlestick chart component drawing 60 candles with OHLC data, green/red coloring, and moving average overlay.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching market data, managing watchlist operations, and handling user signup with backend actor integration and automatic cache invalidation.",
+  "frontend/src/lib/constants.ts": "Constants file defining 200+ F&O stock symbols and market news headlines array.",
+  "frontend/src/lib/analytics.ts": "Analytics engine with expanded candlestick pattern detection supporting 16 patterns (Hammer, Inverse Hammer, Bullish/Bearish Engulfing, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji, Hanging Man, Shooting Star, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji, Doji, Spinning Top) categorized as bullish/bearish/neutral with complete parameter support for multi-candle pattern analysis, plus scenario detection and option chain generation functions.",
+  "frontend/src/index.css": "Global styles with OKLCH color system, glassmorphic dark theme, radial gradient backgrounds, and ticker animation keyframes.",
+  "frontend/tailwind.config.js": "Tailwind configuration extending theme with custom OKLCH colors, backdrop blur utilities, and animation definitions.",
+  "frontend/src/components/SignupScreen.tsx": "User registration screen with username, password, and name input fields, form validation, error handling for duplicate usernames, and navigation back to login screen after successful signup."
+}

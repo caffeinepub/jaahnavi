@@ -1,0 +1,102 @@
+{
+  "kind": "build_request",
+  "title": "Expand candlestick pattern detection with 12 additional patterns and categorize all patterns into Bullish/Bearish/Neutral types",
+  "projectName": "JAAHNAVI",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-26",
+      "text": "Expand candlestick pattern detection engine in frontend/src/lib/analytics.ts to recognize 12 additional patterns: Inverse Hammer, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji (bullish category); Hanging Man, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji (bearish category); Doji, Spinning Top (neutral category)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Inverse Hammer, Bullish Engulfing, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji",
+          "Hanging Man, Shooting Star, Bearish Engulfing, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji",
+          "Doji, Spinning Top"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Pattern detection functions return pattern name and category (bullish/bearish/neutral) for all 12 new patterns",
+        "Inverse Hammer detection checks for small body at top with long lower wick",
+        "Piercing Line detection identifies bullish two-candle pattern where second candle closes above midpoint of first bearish candle",
+        "Morning Star detection recognizes three-candle bullish reversal pattern",
+        "Three White Soldiers detection identifies three consecutive long bullish candles",
+        "Dragonfly Doji detection checks for Doji with long lower wick and no upper wick at support levels",
+        "Hanging Man detection identifies bearish pattern with small body at top and long lower wick",
+        "Evening Star detection recognizes three-candle bearish reversal pattern",
+        "Three Black Crows detection identifies three consecutive long bearish candles",
+        "Dark Cloud Cover detection identifies bearish two-candle pattern where second candle opens above first and closes below midpoint",
+        "Gravestone Doji detection checks for Doji with long upper wick and no lower wick at resistance levels",
+        "Doji detection identifies candles with nearly equal open and close prices",
+        "Spinning Top detection identifies small body with upper and lower wicks showing indecision"
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "text": "Categorize all detected candlestick patterns in CandleAnalysisView into three distinct sections: Bullish Candles (Hammer, Inverse Hammer, Bullish Engulfing, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji) with green styling and 'BUY/LONG Setup' bias indicator, Bearish Candles (Hanging Man, Shooting Star, Bearish Engulfing, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji) with red styling and 'SELL/SHORT Setup' bias indicator, and Neutral Candles (Doji, Spinning Top) with gray/white styling and 'WAIT/NO TRADE' bias indicator",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "🟢 1️⃣ BULLISH CANDLES (Expect Upside Reversal / Continuation)",
+          "🔴 2️⃣ BEARISH CANDLES (Expect Downside Reversal / Continuation)",
+          "⚪ 3️⃣ NEUTRAL CANDLES (Indecision / Sideways)",
+          "👉 Bias: BUY / LONG Setup",
+          "👉 Bias: SELL / SHORT Setup",
+          "👉 Bias: WAIT / NO TRADE until breakout"
+        ]
+      },
+      "acceptanceCriteria": [
+        "CandleAnalysisView displays three separate card sections labeled 'Bullish Candles', 'Bearish Candles', and 'Neutral Candles'",
+        "Bullish section uses green accent colors and displays '👉 Bias: BUY / LONG Setup' indicator",
+        "Bearish section uses red accent colors and displays '👉 Bias: SELL / SHORT Setup' indicator",
+        "Neutral section uses gray/white accent colors and displays '👉 Bias: WAIT / NO TRADE until breakout' indicator",
+        "Each section lists stocks with detected patterns matching that category",
+        "Pattern names are displayed with corresponding emoji indicators (🟢 for bullish, 🔴 for bearish, ⚪ for neutral)"
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "text": "Update CandleAnalysisView to display category descriptions: 'Expect Upside Reversal / Continuation' for bullish section indicating buying pressure, 'Expect Downside Reversal / Continuation' for bearish section indicating selling pressure, and 'Indecision / Sideways' for neutral section indicating market confusion requiring confirmation",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "BULLISH CANDLES (Expect Upside Reversal / Continuation) These indicate buying pressure",
+          "BEARISH CANDLES (Expect Downside Reversal / Continuation) These indicate selling pressure",
+          "NEUTRAL CANDLES (Indecision / Sideways) Market confusion – wait for confirmation"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Bullish section header includes subtitle 'Expect Upside Reversal / Continuation' with 'These indicate buying pressure' description",
+        "Bearish section header includes subtitle 'Expect Downside Reversal / Continuation' with 'These indicate selling pressure' description",
+        "Neutral section header includes subtitle 'Indecision / Sideways' with 'Market confusion – wait for confirmation' description",
+        "Descriptions are visually distinct from pattern listings using typography hierarchy"
+      ]
+    }
+  ],
+  "constraints": [
+    "Preserve existing pattern detection logic for Hammer, Shooting Star, Bullish Engulfing, and Bearish Engulfing patterns",
+    "Maintain compatibility with existing CandleAnalysisView component structure and layout",
+    "Do not modify backend/main.mo or any backend files",
+    "Keep all pattern detection logic in frontend/src/lib/analytics.ts"
+  ],
+  "nonGoals": [
+    "Real-time pattern detection or alerts",
+    "Historical pattern backtesting or performance metrics",
+    "User-configurable pattern parameters or thresholds",
+    "Pattern confidence scoring or probability calculations",
+    "Integration with external charting libraries for pattern visualization"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

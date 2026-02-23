@@ -1,0 +1,15 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-23T06:37:55.372Z",
+  "summary": "The implementation successfully adds 12 new candlestick patterns with bullish/bearish/neutral categorization to analytics.ts and updates CandleAnalysisView to display three separate sections (Bullish, Bearish, Neutral) with appropriate styling, bias indicators, and category descriptions. All requirements appear to be implemented based on the provided diff evidence.",
+  "missing_requirements": [],
+  "hallucinated_features": [],
+  "confidence": 0.85,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/lib/analytics.ts",
+    "frontend/src/views/CandleAnalysisView.tsx",
+    "project_state.json"
+  ]
+}
