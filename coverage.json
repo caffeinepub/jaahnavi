@@ -1,0 +1,73 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T08:32:42.058Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 5,
+    "implemented": 0,
+    "items": [
+      {
+        "id": "REQ-52",
+        "summary": "Update backend/main.mo to perform HTTP outcalls to the following NSE India public endpoints: (1) https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O for all F&O stock prices, (2) https://www.nseindia.com/api/allIndices for NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, and INDIA VIX index values. Each outcall must include request headers: Referer: https://www.nseindia.com, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36, Accept: application/json. Parse the JSON responses and persist the latest values (symbol, lastPrice, pChange, volume, openInterest, high, low, open) per symbol in a stable HashMap. Expose: (a) query method getMarketSnapshot() returning all stored stock snapshots, (b) update method refreshMarketData() that triggers fresh outcalls and updates the HashMap, (c) query method getIndicesSnapshot() returning stored index data. Ensure the actor accumulates and merges new data on each refresh without wiping previously stored symbols.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-53",
+        "summary": "Update frontend/src/lib/nseClient.ts so that fetchFOStockList(), fetchAllIndices(), and fetchOptionChain(symbol) each call the corresponding backend actor methods (getMarketSnapshot, getIndicesSnapshot, and option chain query) rather than hitting NSE directly from the browser. Each function must return typed data conforming to the existing NSESnapshot interface (symbol, lastPrice, pChange, volume, oi, high, low, open). Also export a refreshMarketData() function that calls the backend's refreshMarketData() update method. Handle actor errors gracefully, returning null or empty arrays on failure.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/lib/nseClient.ts"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-54",
+        "summary": "Update frontend/src/hooks/useQueries.ts to fully replace any remaining random-walk or mock simulation logic with live data from the backend proxy. On app initialization call refreshMarketData() once to trigger a fresh NSE fetch, then call fetchFOStockList() and fetchAllIndices() to seed the central market data store. Set up a polling interval of every 5 seconds that calls refreshMarketData() followed by fetchFOStockList() and fetchAllIndices() to update the central store. All views (Dashboard, FOListView, WatchlistView, BullishScannerView, BearishScannerView, OptionChainView, SectorsView) must read from this central store so they all display the same live NSE prices simultaneously. Remove all Math.random() price mutation intervals from the data layer.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-55",
+        "summary": "Update OptionChainView.tsx to fetch live NSE option chain data via the backend proxy every 5 seconds when the view is active. For equity symbols use the backend's option chain query that proxies https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL>; for indices (NIFTY, BANKNIFTY, FINNIFTY) use https://www.nseindia.com/api/option-chain-indices?symbol=<SYMBOL>. The backend must expose a getOptionChain(symbol: Text) query/update method that performs the HTTP outcall with NSE headers and returns the parsed strikes data. Parse the response to populate CE and PE rows with live LTP, IV, OI, change in OI (ΔOI), and volume. Recalculate Best CE / Best PE recommendation cards on each refresh based on highest live ΔOI values.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/views/OptionChainView.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-56",
+        "summary": "Update the NSE live data status indicator in the Header component and Dashboard view to accurately reflect the backend proxy fetch status. Show 'NSE LIVE' with an animated blinking green dot when data was successfully fetched from the backend NSE proxy within the last 15 seconds. Show 'DELAYED' with an amber dot when the last successful fetch was between 15 and 60 seconds ago. Show 'OFFLINE' with a red dot when no successful fetch has occurred in over 60 seconds or when the backend returns an error. Display the exact timestamp of the last successful NSE data fetch next to the status badge.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Header.tsx",
+          "frontend/src/views/Dashboard.tsx"
+        ],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

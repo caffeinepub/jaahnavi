@@ -1,0 +1,123 @@
+{
+  "kind": "build_request",
+  "title": "Inject real NSE India live prices across all views via backend proxy",
+  "projectName": "JAAHNAVI",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-52",
+      "text": "Update backend/main.mo to perform HTTP outcalls to the following NSE India public endpoints: (1) https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O for all F&O stock prices, (2) https://www.nseindia.com/api/allIndices for NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, and INDIA VIX index values. Each outcall must include request headers: Referer: https://www.nseindia.com, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36, Accept: application/json. Parse the JSON responses and persist the latest values (symbol, lastPrice, pChange, volume, openInterest, high, low, open) per symbol in a stable HashMap. Expose: (a) query method getMarketSnapshot() returning all stored stock snapshots, (b) update method refreshMarketData() that triggers fresh outcalls and updates the HashMap, (c) query method getIndicesSnapshot() returning stored index data. Ensure the actor accumulates and merges new data on each refresh without wiping previously stored symbols.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i wanna same to same nse website price dump into this webpage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "refreshMarketData() triggers HTTP outcalls to both NSE endpoints with correct headers",
+        "getMarketSnapshot() returns stored records for all F&O symbols with lastPrice, pChange, volume, openInterest, high, low, open fields",
+        "getIndicesSnapshot() returns stored records for NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, INDIA VIX",
+        "Persisted data survives across query calls without being reset",
+        "HTTP errors are handled gracefully and do not trap the actor"
+      ]
+    },
+    {
+      "id": "REQ-53",
+      "text": "Update frontend/src/lib/nseClient.ts so that fetchFOStockList(), fetchAllIndices(), and fetchOptionChain(symbol) each call the corresponding backend actor methods (getMarketSnapshot, getIndicesSnapshot, and option chain query) rather than hitting NSE directly from the browser. Each function must return typed data conforming to the existing NSESnapshot interface (symbol, lastPrice, pChange, volume, oi, high, low, open). Also export a refreshMarketData() function that calls the backend's refreshMarketData() update method. Handle actor errors gracefully, returning null or empty arrays on failure.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i wanna same to same nse website price dump into this webpage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "fetchFOStockList() returns real F&O stock prices from the backend actor snapshot",
+        "fetchAllIndices() returns real index values from the backend actor snapshot",
+        "refreshMarketData() triggers backend's refreshMarketData() update method",
+        "All functions return typed objects matching the NSESnapshot interface",
+        "No direct browser-to-NSE API calls remain in nseClient.ts"
+      ]
+    },
+    {
+      "id": "REQ-54",
+      "text": "Update frontend/src/hooks/useQueries.ts to fully replace any remaining random-walk or mock simulation logic with live data from the backend proxy. On app initialization call refreshMarketData() once to trigger a fresh NSE fetch, then call fetchFOStockList() and fetchAllIndices() to seed the central market data store. Set up a polling interval of every 5 seconds that calls refreshMarketData() followed by fetchFOStockList() and fetchAllIndices() to update the central store. All views (Dashboard, FOListView, WatchlistView, BullishScannerView, BearishScannerView, OptionChainView, SectorsView) must read from this central store so they all display the same live NSE prices simultaneously. Remove all Math.random() price mutation intervals from the data layer.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i wanna same to same nse website price dump into this webpage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "On page load, the app triggers a backend NSE refresh and seeds the store with real prices",
+        "Prices in the store update every 5 seconds via backend proxy polling",
+        "No random-walk price mutation logic remains in useQueries.ts",
+        "All views display the same price for the same symbol at the same time",
+        "Fallback seed values are only used when the backend returns an error"
+      ]
+    },
+    {
+      "id": "REQ-55",
+      "text": "Update OptionChainView.tsx to fetch live NSE option chain data via the backend proxy every 5 seconds when the view is active. For equity symbols use the backend's option chain query that proxies https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL>; for indices (NIFTY, BANKNIFTY, FINNIFTY) use https://www.nseindia.com/api/option-chain-indices?symbol=<SYMBOL>. The backend must expose a getOptionChain(symbol: Text) query/update method that performs the HTTP outcall with NSE headers and returns the parsed strikes data. Parse the response to populate CE and PE rows with live LTP, IV, OI, change in OI (ΔOI), and volume. Recalculate Best CE / Best PE recommendation cards on each refresh based on highest live ΔOI values.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i wanna same to same nse website price dump into this webpage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes getOptionChain(symbol) that outcalls the correct NSE endpoint based on whether the symbol is an index or equity",
+        "CE and PE rows display real LTP, IV, OI, ΔOI, and Volume values from NSE",
+        "Option chain refreshes every 5 seconds while OptionChainView is visible",
+        "Best CE and Best PE cards update on each refresh based on highest live ΔOI",
+        "Switching symbols fetches option chain data for the new symbol immediately"
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "text": "Update the NSE live data status indicator in the Header component and Dashboard view to accurately reflect the backend proxy fetch status. Show 'NSE LIVE' with an animated blinking green dot when data was successfully fetched from the backend NSE proxy within the last 15 seconds. Show 'DELAYED' with an amber dot when the last successful fetch was between 15 and 60 seconds ago. Show 'OFFLINE' with a red dot when no successful fetch has occurred in over 60 seconds or when the backend returns an error. Display the exact timestamp of the last successful NSE data fetch next to the status badge.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i wanna same to same nse website price dump into this webpage"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Header shows 'NSE LIVE' green dot when backend returned data within the last 15 seconds",
+        "Header shows 'DELAYED' amber dot when last fetch was 15–60 seconds ago",
+        "Header shows 'OFFLINE' red dot when no successful fetch in over 60 seconds or on error",
+        "Last successful fetch timestamp is displayed next to the status badge",
+        "Dashboard view mirrors the same status indicator as the header"
+      ]
+    }
+  ],
+  "constraints": [
+    "All NSE API calls must be made from the backend actor via HTTP outcalls — no direct browser-to-NSE requests",
+    "Do not edit files under frontend/src/hooks/useActor.ts, frontend/src/hooks/useInternetIdentity.ts, frontend/src/main.tsx, or frontend/src/components/ui",
+    "The single-actor architecture in backend/main.mo must be preserved — no microservices"
+  ],
+  "nonGoals": [
+    "Changing the UI layout, color theme, or visual design",
+    "Adding new views or navigation items",
+    "Implementing WebSocket or server-sent event real-time streaming",
+    "Integrating any third-party data provider other than NSE India public endpoints"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Inject real NSE India live prices across all views via backend proxy",
+  "requirements": [
+    {
+      "id": "REQ-53",
+      "summary": "Update nseClient.ts to call backend actor methods instead of direct NSE API calls",
+      "acceptanceCriteria": [
+        "fetchFOStockList() returns real F&O stock prices from the backend actor snapshot",
+        "fetchAllIndices() returns real index values from the backend actor snapshot",
+        "refreshMarketData() triggers backend's refreshMarketData() update method",
+        "All functions return typed objects matching the NSESnapshot interface",
+        "No direct browser-to-NSE API calls remain in nseClient.ts"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/nseClient.ts",
+          "operation": "modify",
+          "description": "Replace all direct NSE API fetch logic with backend actor method calls. Update fetchFOStockList() to call actor.getMarketSnapshot() and transform MarketSymbolData[] to NSESnapshot[]. Update fetchAllIndices() to call actor.getIndicesSnapshot() and transform IndicesSnapshot[] to the expected index format. Update fetchOptionChain(symbol) to call actor.getOptionChain(symbol) and return parsed JSON. Add a new refreshMarketData() function that calls actor.refreshMarketData(). Add error handling that returns null or empty arrays on actor call failure. Remove all fetch() calls to NSE endpoints."
+        }
+      ]
+    },
+    {
+      "id": "REQ-54",
+      "summary": "Update useQueries.ts to use live backend data and remove mock simulation logic",
+      "acceptanceCriteria": [
+        "On page load, the app triggers a backend NSE refresh and seeds the store with real prices",
+        "Prices in the store update every 5 seconds via backend proxy polling",
+        "No random-walk price mutation logic remains in useQueries.ts",
+        "All views display the same price for the same symbol at the same time",
+        "Fallback seed values are only used when the backend returns an error"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Remove all Math.random() price mutation intervals and random-walk simulation logic. Add initialization logic that calls refreshMarketData() once on mount, followed by fetchFOStockList() and fetchAllIndices() to seed the central market data store. Set up a 5-second polling interval using React Query's refetchInterval that calls refreshMarketData(), then fetchFOStockList() and fetchAllIndices() to update the store. Ensure all queries share the same queryKey structure so views read consistent data. Track the timestamp of the last successful NSE fetch for status indicator logic. Keep fallback seed data as a safety net when backend returns errors."
+        }
+      ]
+    },
+    {
+      "id": "REQ-55",
+      "summary": "Update OptionChainView.tsx to fetch live NSE option chain data via backend proxy",
+      "acceptanceCriteria": [
+        "CE and PE rows display real LTP, IV, OI, ΔOI, and Volume values from NSE",
+        "Option chain refreshes every 5 seconds while OptionChainView is visible",
+        "Best CE and Best PE cards update on each refresh based on highest live ΔOI",
+        "Switching symbols fetches option chain data for the new symbol immediately"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/views/OptionChainView.tsx",
+          "operation": "modify",
+          "description": "Replace any simulated option chain data generation with a React Query hook that calls the backend actor's getOptionChain(symbol) method. Set up a 5-second polling interval (refetchInterval: 5000) that is active only when the OptionChainView is mounted. Parse the returned JSON string to extract CE and PE strike rows with live LTP, IV, OI, ΔOI (change in OI), and volume. Recalculate the Best CE and Best PE recommendation cards on each refresh by finding the strikes with the highest ΔOI values. Ensure switching the selected symbol immediately triggers a fresh fetch for the new symbol's option chain."
+        }
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "summary": "Update Header and Dashboard to show accurate NSE live data status indicator",
+      "acceptanceCriteria": [
+        "Header shows 'NSE LIVE' green dot when backend returned data within the last 15 seconds",
+        "Header shows 'DELAYED' amber dot when last fetch was 15–60 seconds ago",
+        "Header shows 'OFFLINE' red dot when no successful fetch in over 60 seconds or on error",
+        "Last successful fetch timestamp is displayed next to the status badge",
+        "Dashboard view mirrors the same status indicator as the header"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Header.tsx",
+          "operation": "modify",
+          "description": "Update the NSE status indicator logic to read the last successful fetch timestamp from the central market data store (managed in useQueries.ts). Display 'NSE LIVE' with an animated blinking green dot when the timestamp is within the last 15 seconds. Display 'DELAYED' with an amber dot when the timestamp is between 15 and 60 seconds ago. Display 'OFFLINE' with a red dot when no successful fetch has occurred in over 60 seconds or when the backend returned an error. Show the exact timestamp of the last successful NSE data fetch next to the status badge."
+        },
+        {
+          "path": "frontend/src/views/Dashboard.tsx",
+          "operation": "modify",
+          "description": "Add the same NSE status indicator logic as the Header component. Read the last successful fetch timestamp from the central market data store and display 'NSE LIVE' (green, animated), 'DELAYED' (amber), or 'OFFLINE' (red) with the timestamp, following the same 15-second and 60-second thresholds. Ensure the Dashboard status indicator updates in sync with the Header."
+        }
+      ]
+    }
+  ]
+}

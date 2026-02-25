@@ -1,0 +1,48 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T08:32:42.054Z",
+  "summary": "The diff shows only partial modifications to backend/main.mo and project_state.json. While backend/main.mo shows some relevant types (MarketSymbolData, IndicesSnapshot) and stub methods (getMarketSnapshot, getIndicesSnapshot), the diff is heavily truncated and does not show the actual HTTP outcall implementation, refreshMarketData(), getOptionChain(), or any frontend changes. The vast majority of requirements across REQ-52 through REQ-56 cannot be confirmed as implemented.",
+  "missing_requirements": [
+    {
+      "id": "REQ-52",
+      "requirement": "Backend HTTP outcalls to NSE endpoints with correct headers, JSON parsing, HashMap persistence, refreshMarketData() update method, getMarketSnapshot(), getIndicesSnapshot(), graceful error handling",
+      "reason": "The diff shows type definitions and stub query methods in backend/main.mo, but the actual HTTP outcall logic, NSE endpoint URLs, request headers (Referer, User-Agent, Accept), JSON parsing, HashMap merge logic, and refreshMarketData() update method are not visible in the truncated diff.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-53",
+      "requirement": "Update frontend/src/lib/nseClient.ts so fetchFOStockList(), fetchAllIndices(), fetchOptionChain(symbol) call backend actor methods instead of hitting NSE directly; export refreshMarketData(); return typed NSESnapshot objects; handle errors gracefully",
+      "reason": "No changes to frontend/src/lib/nseClient.ts are present in the diff at all. The file is not listed as modified.",
+      "evidence": []
+    },
+    {
+      "id": "REQ-54",
+      "requirement": "Update frontend/src/hooks/useQueries.ts to replace random-walk/mock logic with live backend proxy data, call refreshMarketData() on init, poll every 5 seconds, remove all Math.random() price mutations",
+      "reason": "No changes to frontend/src/hooks/useQueries.ts are present in the diff. The file is not listed as modified.",
+      "evidence": []
+    },
+    {
+      "id": "REQ-55",
+      "requirement": "Backend exposes getOptionChain(symbol) method performing HTTP outcalls to correct NSE endpoint (equities vs indices); OptionChainView.tsx polls every 5 seconds; CE/PE rows show live LTP, IV, OI, delta OI, Volume; Best CE/PE cards update on refresh",
+      "reason": "No changes to frontend/src/views/OptionChainView.tsx are present in the diff. While backend/main.mo defines CEPEData and OptionChainEntry types, the actual getOptionChain() HTTP outcall method is not visible in the truncated diff.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-56",
+      "requirement": "NSE live status indicator in Header and Dashboard: NSE LIVE green blinking dot within 15s, DELAYED amber dot 15-60s, OFFLINE red dot over 60s or error, timestamp of last successful fetch displayed",
+      "reason": "No changes to the Header component or Dashboard view are present in the diff. These frontend files are not listed as modified.",
+      "evidence": []
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.82,
+  "changed_files": [
+    "backend/main.mo",
+    "project_state.json"
+  ]
+}

@@ -1,0 +1,604 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 19,
+  "summary": "Financial trading intelligence dashboard (JAAHNAVI) for F&O stocks with option chain analysis, market scanners, candlestick patterns, sector performance tracking, live news feed, and real-time market data visualization",
+  "architectural_notes": [
+    "Single-page application architecture with vanilla JavaScript (no framework dependencies)",
+    "Client-side state management with appState object",
+    "Canvas-based charting without external libraries",
+    "View-based routing system with sidebar navigation",
+    "Real-time data updates via setInterval (simulating WebSocket)",
+    "Responsive grid layouts (4-column, 3-column, 2-column with breakpoints)",
+    "Sticky table headers and first columns for large datasets",
+    "Toast notification system for user feedback",
+    "Analytics engine for option chain scenario detection (Long Build Up, Short Covering, etc.)",
+    "NSE India live data integration requested: replace mock simulation with real NSE API/scraper for live stock prices, OI, IV, option chain, and market indices"
+  ],
+  "known_issues": [
+    "CORS restrictions when calling NSE India APIs directly from browser — live data may not load as expected without a backend proxy",
+    "Market index values are incorrectly scaled: NIFTY 50 displays ~221800 (should be ~25450) and BANK NIFTY displays ~48460 (should be ~60890) — likely caused by wrong base values or multipliers in the simulation/data seeding logic"
+  ],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-implement-authentication-system-with-login-screen-accepting-username-admin-and-password-admin-displaying-error-for-invalid-credentials-and-redirecting-to-main-dashboard-on-success",
+      "title": "Implement authentication system with login screen accepting username 'admin' and password 'admin', displaying error for invalid credentials, and redirecting to main dashboard on success",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-dashboard-view-displaying-market-indices-cards-for-nifty-50-bank-nifty-sensex-finnifty-and-india-vix-with-current-price-percentage-change-and-phase-indicator-bullish-bearish-neutral",
+      "title": "Create dashboard view displaying market indices cards for NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, and INDIA VIX with current price, percentage change, and phase indicator (Bullish/Bearish/Neutral)",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-comprehensive-option-chain-analyzer-with-28-column-table-displaying-ce-calls-and-pe-puts-data-including-ath-ltp-change-vwap-volume-oi-oi-iv-atp-action-signals-and-scenario-badges-plus-analysis-columns-for-oi-diff-oi-diff-pcr-oi-pcr-doi-and-trend-flags",
+      "title": "Build comprehensive option chain analyzer with 28-column table displaying CE (Calls) and PE (Puts) data including ATH, LTP, Change, VWAP, Volume, OI, ΔOI, IV, ATP, Action signals, and Scenario badges, plus analysis columns for OI_Diff, ΔOI_Diff, PCR_OI, PCR_DOI, and trend flags",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-best-ce-and-best-pe-strike-recommendations-based-on-highest-oi-values-in-highlighted-summary-cards-above-the-option-chain-table",
+      "title": "Display best CE and best PE strike recommendations based on highest ΔOI values in highlighted summary cards above the option chain table",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-stock-scanners-for-open-high-bullish-breakout-and-open-low-bearish-breakdown-patterns-filtering-stocks-where-current-price-equals-opening-price-at-high-or-low",
+      "title": "Create stock scanners for Open=High (bullish breakout) and Open=Low (bearish breakdown) patterns, filtering stocks where current price equals opening price at high or low",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-candle-analysis-view-displaying-separate-panels-for-bullish-and-bearish-formations-listing-stocks-with-detected-patterns-and-pattern-names",
+      "title": "Create candle analysis view displaying separate panels for bullish and bearish formations, listing stocks with detected patterns and pattern names",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-sector-performance-view-showing-cards-for-nifty-it-nifty-bank-nifty-auto-nifty-pharma-nifty-fmcg-and-nifty-metal-with-percentage-change-and-strength-indicators",
+      "title": "Build sector performance view showing cards for NIFTY IT, NIFTY BANK, NIFTY AUTO, NIFTY PHARMA, NIFTY FMCG, and NIFTY METAL with percentage change and strength indicators",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-live-news-ticker-at-top-of-main-content-area-with-horizontal-auto-scrolling-animation-displaying-market-headlines-with-live-tags",
+      "title": "Implement live news ticker at top of main content area with horizontal auto-scrolling animation, displaying market headlines with 'LIVE' tags",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-watchlist-management-system-allowing-users-to-add-stocks-to-watchlist-view-watchlist-table-with-price-and-change-data-and-remove-stocks-from-watchlist",
+      "title": "Create watchlist management system allowing users to add stocks to watchlist, view watchlist table with price and change data, and remove stocks from watchlist",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-complete-f-o-stocks-list-view-displaying-table-of-all-200-stocks-with-symbol-price-change-volume-and-add-to-watchlist-action-button",
+      "title": "Build complete F&O stocks list view displaying table of all 200+ stocks with Symbol, Price, Change, Volume, and Add to Watchlist action button",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-canvas-based-candlestick-charting-engine-drawing-60-candles-with-green-red-coloring-high-low-wicks-and-orange-moving-average-overlay",
+      "title": "Implement canvas-based candlestick charting engine drawing 60 candles with green/red coloring, high-low wicks, and orange moving average overlay",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-global-symbol-search-functionality-in-header-bar-that-navigates-to-option-chain-view-when-user-presses-enter-on-valid-f-o-symbol",
+      "title": "Add global symbol search functionality in header bar that navigates to option chain view when user presses Enter on valid F&O symbol",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-glassmorphic-dark-theme-ui-with-navy-blue-gradients-bg-dark-0f172a-translucent-panels-using-backdrop-filter-blur-radial-gradient-background-overlays-at-10-20-and-90-80-positions-with-blue-and-purple-accent-colors-border-colors-using-rgba-148-163-184-0-15-and-smooth-transitions-on-all-interactive-elements",
+      "title": "Implement glassmorphic dark theme UI with navy blue gradients (--bg-dark: #0f172a), translucent panels using backdrop-filter blur, radial gradient background overlays at 10%/20% and 90%/80% positions with blue and purple accent colors, border colors using rgba(148, 163, 184, 0.15), and smooth transitions on all interactive elements",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-sidebar-navigation-with-brand-header-jaahnavi-navigation-items-for-dashboard-watchlist-option-chain-open-high-scanner-open-low-scanner-all-f-o-list-candle-analysis-sectors-and-news-feed-with-active-state-highlighting-and-smooth-transitions",
+      "title": "Create sidebar navigation with brand header 'JAAHNAVI', navigation items for Dashboard, Watchlist, Option Chain, Open=High scanner, Open=Low scanner, All F&O List, Candle Analysis, Sectors, and News Feed, with active state highlighting and smooth transitions",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-toast-notification-system-displaying-success-messages-at-bottom-right-with-slide-up-animation-auto-dismissing-after-3-seconds",
+      "title": "Implement toast notification system displaying success messages at bottom-right with slide-up animation, auto-dismissing after 3 seconds",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-symbol-dropdown-selector-in-option-chain-view-header-allowing-users-to-switch-between-different-f-o-stocks-updating-the-option-chain-data-when-selection-changes",
+      "title": "Add symbol dropdown selector in option chain view header allowing users to switch between different F&O stocks, updating the option chain data when selection changes",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-news-feed-page-view-displaying-all-market-headlines-in-card-format-with-newspaper-emoji-icons-headline-text-and-read-analysis-action-buttons",
+      "title": "Create news feed page view displaying all market headlines in card format with newspaper emoji icons, headline text, and 'Read Analysis' action buttons",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-reverse-the-scanner-interpretation-logic-so-that-open-high-pattern-indicates-bearish-mode-and-open-low-pattern-indicates-bullish-mode",
+      "title": "Reverse the scanner interpretation logic so that Open=High pattern indicates bearish mode and Open=Low pattern indicates bullish mode",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-all-f-o-stocks-with-current-prices-that-are-nearby-their-open-high-and-open-low-levels-in-the-respective-scanner-views",
+      "title": "Display all F&O stocks with current prices that are nearby their Open=High and Open=Low levels in the respective scanner views",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-user-registration-functionality-allowing-new-users-to-create-accounts-with-username-and-password",
+      "title": "Implement user registration functionality allowing new users to create accounts with username and password",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-candlestick-pattern-detection-engine-in-frontend-src-lib-analytics-ts-to-recognize-12-additional-patterns-inverse-hammer-piercing-line-morning-star-three-white-soldiers-dragonfly-doji-bullish-category-hanging-man-evening-star-three-black-crows-dark-cloud-cover-gravestone-doji-bearish-category-doji-spinning-top-neutral-category",
+      "title": "Expand candlestick pattern detection engine in frontend/src/lib/analytics.ts to recognize 12 additional patterns: Inverse Hammer, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji (bullish category); Hanging Man, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji (bearish category); Doji, Spinning Top (neutral category)",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-categorize-all-detected-candlestick-patterns-in-candleanalysisview-into-three-distinct-sections-bullish-candles-hammer-inverse-hammer-bullish-engulfing-piercing-line-morning-star-three-white-soldiers-dragonfly-doji-with-green-styling-and-buy-long-setup-bias-indicator-bearish-candles-hanging-man-shooting-star-bearish-engulfing-evening-star-three-black-crows-dark-cloud-cover-gravestone-doji-with-red-styling-and-sell-short-setup-bias-indicator-and-neutral-candles-doji-spinning-top-with-gray-white-styling-and-wait-no-trade-bias-indicator",
+      "title": "Categorize all detected candlestick patterns in CandleAnalysisView into three distinct sections: Bullish Candles (Hammer, Inverse Hammer, Bullish Engulfing, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji) with green styling and 'BUY/LONG Setup' bias indicator, Bearish Candles (Hanging Man, Shooting Star, Bearish Engulfing, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji) with red styling and 'SELL/SHORT Setup' bias indicator, and Neutral Candles (Doji, Spinning Top) with gray/white styling and 'WAIT/NO TRADE' bias indicator",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-candleanalysisview-to-display-category-descriptions-expect-upside-reversal-continuation-for-bullish-section-indicating-buying-pressure-expect-downside-reversal-continuation-for-bearish-section-indicating-selling-pressure-and-indecision-sideways-for-neutral-section-indicating-market-confusion-requiring-confirmation",
+      "title": "Update CandleAnalysisView to display category descriptions: 'Expect Upside Reversal / Continuation' for bullish section indicating buying pressure, 'Expect Downside Reversal / Continuation' for bearish section indicating selling pressure, and 'Indecision / Sideways' for neutral section indicating market confusion requiring confirmation",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-bullishscannerview-tsx-ensure-the-view-is-labeled-and-styled-as-bullish-scanner-and-explicitly-states-that-open-low-pattern-indicates-bullish-mode-the-section-header-badge-labels-and-any-descriptive-text-must-reflect-that-when-a-stock-s-opening-price-equals-its-day-low-buyers-stepped-in-early-and-the-bias-is-bullish-upward-momentum",
+      "title": "In BullishScannerView.tsx, ensure the view is labeled and styled as 'Bullish Scanner' and explicitly states that Open=Low pattern indicates Bullish mode. The section header, badge labels, and any descriptive text must reflect that when a stock's opening price equals its day low, buyers stepped in early and the bias is bullish (upward momentum).",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-bearishscannerview-tsx-ensure-the-view-is-labeled-and-styled-as-bearish-scanner-and-explicitly-states-that-open-high-pattern-indicates-bearish-mode-the-section-header-badge-labels-and-any-descriptive-text-must-reflect-that-when-a-stock-s-opening-price-equals-its-day-high-sellers-dominated-from-the-open-and-the-bias-is-bearish-downward-momentum",
+      "title": "In BearishScannerView.tsx, ensure the view is labeled and styled as 'Bearish Scanner' and explicitly states that Open=High pattern indicates Bearish mode. The section header, badge labels, and any descriptive text must reflect that when a stock's opening price equals its day high, sellers dominated from the open and the bias is bearish (downward momentum).",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-sidebar-navigation-labels-in-sidebar-tsx-so-that-the-open-high-scanner-menu-item-is-clearly-associated-with-bearish-context-e-g-open-high-bearish-and-the-open-low-scanner-menu-item-is-clearly-associated-with-bullish-context-e-g-open-low-bullish-reinforcing-the-correct-trading-interpretation",
+      "title": "Update the sidebar navigation labels in Sidebar.tsx so that the Open=High scanner menu item is clearly associated with bearish context (e.g., 'Open=High (Bearish)') and the Open=Low scanner menu item is clearly associated with bullish context (e.g., 'Open=Low (Bullish)'), reinforcing the correct trading interpretation.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-real-time-market-data-simulation-engine-in-frontend-src-hooks-usequeries-ts-to-update-all-f-o-stock-prices-percentage-changes-day-high-low-volume-vwap-open-interest-and-iv-values-every-1-second-using-a-random-walk-algorithm-so-every-view-dashboard-folistview-watchlistview-scannerviews-optionchainview-sectorsview-reflects-continuously-changing-live-like-data",
+      "title": "Upgrade the real-time market data simulation engine in frontend/src/hooks/useQueries.ts to update all F&O stock prices, percentage changes, day high/low, volume, VWAP, open interest, and IV values every 1 second using a random-walk algorithm, so every view (Dashboard, FOListView, WatchlistView, ScannerViews, OptionChainView, SectorsView) reflects continuously changing live-like data.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-visible-live-pulse-indicator-badge-in-the-header-component-and-on-the-dashboard-view-that-animates-blinking-green-dot-to-signal-that-market-data-is-streaming-in-real-time-and-display-a-formatted-last-updated-timestamp-that-increments-each-second",
+      "title": "Add a visible 'LIVE' pulse indicator badge in the Header component and on the Dashboard view that animates (blinking green dot) to signal that market data is streaming in real time, and display a formatted last-updated timestamp that increments each second.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-folistview-tsx-update-the-stock-table-so-that-price-and-change-cells-animate-flash-green-for-price-increases-flash-red-for-price-decreases-on-each-data-tick-providing-a-live-trading-terminal-feel",
+      "title": "In FOListView.tsx, update the stock table so that price and change cells animate (flash green for price increases, flash red for price decreases) on each data tick, providing a live trading terminal feel.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-optionchainview-tsx-refresh-the-option-chain-table-data-every-1-second-so-that-ltp-oi-oi-iv-vwap-volume-and-scenario-signal-columns-reflect-the-latest-simulated-market-conditions-and-recalculate-the-best-ce-best-pe-strike-recommendation-cards-on-each-tick",
+      "title": "In OptionChainView.tsx, refresh the option chain table data every 1 second so that LTP, OI, ΔOI, IV, VWAP, Volume, and scenario/signal columns reflect the latest simulated market conditions, and recalculate the Best CE / Best PE strike recommendation cards on each tick.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-watchlistview-tsx-ensure-watchlist-price-and-change-data-updates-every-1-second-from-the-live-data-simulation-so-users-see-real-time-price-movement-for-their-tracked-symbols",
+      "title": "In WatchlistView.tsx, ensure watchlist price and change data updates every 1 second from the live data simulation, so users see real-time price movement for their tracked symbols.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-bullishscannerview-tsx-and-bearishscannerview-tsx-re-evaluate-the-open-low-open-high-proximity-filter-every-1-second-against-the-live-updating-stock-prices-so-the-scanner-lists-dynamically-add-or-remove-stocks-as-their-prices-move-relative-to-open-levels",
+      "title": "In BullishScannerView.tsx and BearishScannerView.tsx, re-evaluate the Open=Low / Open=High proximity filter every 1 second against the live-updating stock prices, so the scanner lists dynamically add or remove stocks as their prices move relative to open levels.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-store-the-live-market-data-state-centrally-e-g-in-a-react-context-or-a-dedicated-zustand-react-query-store-so-all-views-consuming-stock-prices-share-the-same-single-source-of-truth-and-update-simultaneously-without-independent-polling-loops-per-view",
+      "title": "Store the live market data state centrally (e.g., in a React context or a dedicated Zustand/React Query store) so all views consuming stock prices share the same single source of truth and update simultaneously without independent polling loops per view.",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-backend-main-mo-to-persist-a-market-data-snapshot-symbol-last-price-change-percent-volume-oi-that-the-frontend-can-write-to-on-each-simulation-tick-and-read-from-on-page-load-so-refreshing-the-page-restores-the-last-known-market-state-rather-than-resetting-all-prices-to-defaults",
+      "title": "Update the backend main.mo to persist a market data snapshot (symbol, last price, change percent, volume, OI) that the frontend can write to on each simulation tick and read from on page load, so refreshing the page restores the last known market state rather than resetting all prices to defaults.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-utility-module-at-frontend-src-lib-nseclient-ts-that-encapsulates-all-nse-india-api-calls-via-the-backend-proxy-export-typed-async-functions-fetchfostocklist-fetchallindices-and-fetchoptionchain-symbol-string-each-function-calls-the-corresponding-backend-actor-query-update-method-getmarketsnapshot-getindicessnapshot-and-option-chain-equivalent-the-module-must-handle-errors-gracefully-returning-null-or-empty-arrays-on-failure-and-export-a-typescript-interface-for-the-snapshot-data-shape-symbol-lastprice-pchange-volume-oi-high-low-open",
+      "title": "Create a utility module at frontend/src/lib/nseClient.ts that encapsulates all NSE India API calls via the backend proxy. Export typed async functions: fetchFOStockList(), fetchAllIndices(), and fetchOptionChain(symbol: string). Each function calls the corresponding backend actor query/update method (getMarketSnapshot, getIndicesSnapshot, and option chain equivalent). The module must handle errors gracefully, returning null or empty arrays on failure, and export a TypeScript interface for the snapshot data shape (symbol, lastPrice, pChange, volume, oi, high, low, open).",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-simulated-random-walk-data-engine-in-frontend-src-hooks-usequeries-ts-with-a-live-data-fetcher-that-calls-the-backend-proxy-via-nseclient-ts-on-app-initialization-call-fetchfostocklist-and-fetchallindices-to-seed-the-central-market-data-store-with-real-nse-values-set-up-a-polling-interval-of-every-5-seconds-that-calls-refreshmarketdata-on-the-backend-actor-and-then-re-fetches-the-updated-snapshot-to-refresh-the-central-store-all-views-dashboard-folistview-watchlistview-scannerviews-optionchainview-sectorsview-must-continue-to-consume-from-this-central-store-so-they-all-show-live-nse-prices-simultaneously",
+      "title": "Replace the simulated random-walk data engine in frontend/src/hooks/useQueries.ts with a live data fetcher that calls the backend proxy via nseClient.ts. On app initialization, call fetchFOStockList() and fetchAllIndices() to seed the central market data store with real NSE values. Set up a polling interval of every 5 seconds that calls refreshMarketData() on the backend actor and then re-fetches the updated snapshot to refresh the central store. All views (Dashboard, FOListView, WatchlistView, ScannerViews, OptionChainView, SectorsView) must continue to consume from this central store so they all show live NSE prices simultaneously.",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-optionchainview-tsx-to-fetch-live-nse-option-chain-data-for-the-selected-symbol-using-the-backend-proxy-for-equity-symbols-the-backend-should-call-https-www-nseindia-com-api-option-chain-equities-symbol-symbol-for-indices-nifty-banknifty-finnifty-use-https-www-nseindia-com-api-option-chain-indices-symbol-symbol-parse-the-response-to-populate-ce-and-pe-strike-rows-with-live-ltp-iv-oi-change-in-oi-and-volume-values-refresh-the-option-chain-data-every-5-seconds-when-the-view-is-active-recalculate-best-ce-best-pe-recommendation-cards-on-each-refresh-based-on-highest-live-oi-values",
+      "title": "Update OptionChainView.tsx to fetch live NSE option chain data for the selected symbol using the backend proxy. For equity symbols, the backend should call https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL>; for indices (NIFTY, BANKNIFTY, FINNIFTY), use https://www.nseindia.com/api/option-chain-indices?symbol=<SYMBOL>. Parse the response to populate CE and PE strike rows with live LTP, IV, OI, change in OI, and volume values. Refresh the option chain data every 5 seconds when the view is active. Recalculate Best CE / Best PE recommendation cards on each refresh based on highest live ΔOI values.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-live-data-status-indicator-in-the-header-component-and-dashboard-view-to-reflect-nse-live-data-fetch-status-show-nse-live-with-an-animated-blinking-green-dot-when-data-was-successfully-fetched-from-the-backend-nse-proxy-within-the-last-15-seconds-show-delayed-with-an-amber-dot-when-the-last-successful-fetch-was-between-15-and-60-seconds-ago-show-offline-with-a-red-dot-when-no-successful-fetch-has-occurred-in-over-60-seconds-or-when-the-backend-returns-an-error-display-the-exact-timestamp-of-the-last-successful-nse-data-fetch-next-to-the-indicator",
+      "title": "Update the live data status indicator in the Header component and Dashboard view to reflect NSE live data fetch status. Show 'NSE LIVE' with an animated blinking green dot when data was successfully fetched from the backend NSE proxy within the last 15 seconds. Show 'DELAYED' with an amber dot when the last successful fetch was between 15 and 60 seconds ago. Show 'OFFLINE' with a red dot when no successful fetch has occurred in over 60 seconds or when the backend returns an error. Display the exact timestamp of the last successful NSE data fetch next to the indicator.",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-seed-fallback-base-values-for-nifty-50-and-bank-nifty-indices-in-the-frontend-data-layer-usequeries-ts-and-any-seed-data-constants-so-that-nifty-50-displays-a-realistic-value-near-25-450-not-221-800-and-bank-nifty-displays-a-realistic-value-near-60-890-not-48-460-audit-all-index-seed-objects-multipliers-and-scaling-factors-that-produce-the-initial-price-for-these-two-instruments-and-correct-them-to-match-real-nse-price-ranges",
+      "title": "Fix the seed/fallback base values for NIFTY 50 and BANK NIFTY indices in the frontend data layer (useQueries.ts and any seed data constants) so that NIFTY 50 displays a realistic value near 25,450 (not ~221,800) and BANK NIFTY displays a realistic value near 60,890 (not ~48,460). Audit all index seed objects, multipliers, and scaling factors that produce the initial price for these two instruments and correct them to match real NSE price ranges.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-audit-and-correct-all-f-o-stock-seed-fallback-price-values-in-usequeries-ts-and-any-constants-files-to-ensure-no-stock-price-is-unrealistically-scaled-e-g-by-an-incorrect-multiplier-each-stock-s-seed-price-should-reflect-a-realistic-nse-cash-market-price-range-for-that-symbol",
+      "title": "Audit and correct all F&O stock seed/fallback price values in useQueries.ts and any constants files to ensure no stock price is unrealistically scaled (e.g. by an incorrect multiplier). Each stock's seed price should reflect a realistic NSE cash market price range for that symbol.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Login authentication system with admin/admin credentials",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Dashboard view with market indices (NIFTY, BANKNIFTY, SENSEX, FINNIFTY, VIX), FII/DII data, and market breadth",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Option chain analyzer with 28-column table showing CE/PE data, OI analysis, IV, scenario detection, and actionable signals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Stock scanner for Open=High (bullish) and Open=Low (bearish) patterns",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Candlestick pattern detection engine (Hammer, Shooting Star, Engulfing patterns)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Sector performance tracking for IT, Bank, Auto, Pharma, FMCG, Metal sectors",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Live news ticker with market headlines",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Watchlist management system with add/remove functionality",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Complete F&O stocks list view (200+ stocks) with price, volume, and change tracking",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Canvas-based candlestick charting engine with MA overlay",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Real-time market data simulation with 1-second update intervals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Symbol search functionality with Enter-to-navigate",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Glassmorphic dark theme UI with gradient backgrounds and backdrop filters",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Add FII/DII cash flow cards and market breadth statistics displaying advance/decline counts with color-coded values",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Generate option chain data using analytics engine that calculates strike prices around ATM (±500 in 100 increments), computes realistic CE/PE prices based on distance from spot, generates OI and ΔOI values, determines scenario analysis from price and OI changes, and provides actionable signals",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Implement candlestick pattern detection engine recognizing Hammer (bullish), Shooting Star (bearish), Bullish Engulfing, and Bearish Engulfing patterns based on body-to-wick ratios and price relationships",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Create real-time market data simulation system updating all stock prices, changes, high/low values, and VWAP every 1 second using random walk algorithm",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-35",
+      "summary": "Style option chain table with sticky headers, sticky first column (symbol), green CE section header, red PE section header, centered and highlighted strike column, and horizontal scroll for wide 28-column layout",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Reverse scanner logic: Open=High indicates bearish mode, Open=Low indicates bullish mode",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-37",
+      "summary": "Show all F&O stocks with prices near current market price at Open=High and Open=Low levels",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Implement user registration/sign-up functionality to create new accounts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Expand candlestick pattern detection to include Inverse Hammer, Piercing Line, Morning Star, Three White Soldiers, Dragonfly Doji, Hanging Man, Evening Star, Three Black Crows, Dark Cloud Cover, Gravestone Doji, Doji, and Spinning Top patterns",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Categorize detected candlestick patterns into three types: Bullish (reversal/continuation), Bearish (reversal/continuation), and Neutral (indecision) with bias indicators (BUY/LONG, SELL/SHORT, WAIT/NO TRADE)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Live stock prices and live market data integration for all F&O stocks with real-time updates",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-42",
+      "summary": "Fetch live stock prices and market data directly from NSE India website (NSE API/scraper) for all F&O stocks instead of simulated mock data",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Create a backend proxy layer in main.mo that fetches live market data from NSE India public endpoints (https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O, https://www.nseindia.com/api/allIndices, and https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL>) and stores the latest snapshot for all F&O symbols including price, change percent, volume, open interest, high, low, and open values. The backend should expose query methods to retrieve the full snapshot and update methods to store new data fetched by the frontend.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "In frontend/src/hooks/useQueries.ts, replace the simulated random-walk data engine with a live NSE India data fetcher that calls NSE public REST APIs directly from the browser using the NSE equity F&O list endpoint (https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O) and the all-indices endpoint (https://www.nseindia.com/api/allIndices). Set required NSE session cookies and headers (User-Agent, Referer: https://www.nseindia.com, Accept) on each request. Poll both endpoints every 5 seconds to refresh all stock prices, change percent, day high/low, volume, and open interest. On initial load, seed from the backend snapshot so values persist across page refresh.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-45",
+      "summary": "In frontend/src/views/OptionChainView.tsx, fetch live NSE option chain data for the selected symbol using the NSE option chain API endpoint (https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL> for equities, and https://www.nseindia.com/api/option-chain-indices?symbol=<SYMBOL> for indices like NIFTY, BANKNIFTY). Parse the response to populate CE and PE strike rows with live LTP, IV, OI, change in OI, volume, and bid/ask values. Refresh the option chain data every 5 seconds when the view is active.",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-46",
+      "summary": "Add a live data source status indicator in the Header component and Dashboard view that shows 'NSE LIVE' with a blinking green dot when data is being successfully fetched from NSE India APIs, and switches to 'DELAYED' with an amber dot when the last successful fetch was more than 15 seconds ago, or 'OFFLINE' with a red dot when NSE APIs are unreachable. Display the exact timestamp of the last successful NSE data fetch next to the indicator.",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-47",
+      "summary": "Create a utility module at frontend/src/lib/nseClient.ts that encapsulates all NSE India API calls. It must set the required request headers (Referer: https://www.nseindia.com, User-Agent, Accept: application/json) and handle NSE session initialization by first hitting https://www.nseindia.com to obtain session cookies before making data API calls. Export typed fetch functions: fetchFOStockList(), fetchAllIndices(), fetchOptionChain(symbol: string), and fetchStockQuote(symbol: string). All functions must return typed response objects and handle HTTP errors gracefully.",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-48",
+      "summary": "Extend the backend main.mo actor to act as a proxy for NSE India live market data. Add an HTTP outcall (using Motoko's ExperimentalInternetComputer or ic-http-outcall pattern) that fetches from NSE India public endpoints: (1) https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O for F&O stock list prices, (2) https://www.nseindia.com/api/allIndices for index data (NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, INDIA VIX). Include required headers: Referer: https://www.nseindia.com, User-Agent: Mozilla/5.0, Accept: application/json. Persist the latest fetched snapshot per symbol (price, changePercent, volume, openInterest, high, low, open) in a stable HashMap. Expose backend query methods: getMarketSnapshot() returning all stored symbol snapshots, and an update method refreshMarketData() that triggers a fresh HTTP outcall to NSE and updates the stored snapshot. Also expose getIndicesSnapshot() for index data.",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-49",
+      "summary": "Fix incorrect index values: NIFTY 50 showing ~221800 instead of ~25450 and BANK NIFTY showing ~48460 instead of ~60890 — correct the data seeding, scaling, or mock values for market indices to reflect realistic NSE price levels",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-50",
+      "summary": "Update backend/main.mo to perform HTTP outcalls to the following NSE India public endpoints: (1) https://www.nseindia.com/api/equity-stockIndices?index=SECURITIES%20IN%20F%26O for all F&O stock prices, (2) https://www.nseindia.com/api/allIndices for NIFTY 50, BANK NIFTY, SENSEX, FINNIFTY, and INDIA VIX index values. Each outcall must include request headers: Referer: https://www.nseindia.com, User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36, Accept: application/json. Parse the JSON responses and persist the latest values (symbol, lastPrice, pChange, volume, openInterest, high, low, open) per symbol in a stable HashMap. Expose: (a) query method getMarketSnapshot() returning all stored stock snapshots, (b) update method refreshMarketData() that triggers fresh outcalls and updates the HashMap, (c) query method getIndicesSnapshot() returning stored index data. Ensure the actor accumulates and merges new data on each refresh without wiping previously stored symbols.",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-51",
+      "summary": "Update frontend/src/lib/nseClient.ts so that fetchFOStockList(), fetchAllIndices(), and fetchOptionChain(symbol) each call the corresponding backend actor methods (getMarketSnapshot, getIndicesSnapshot, and option chain query) rather than hitting NSE directly from the browser. Each function must return typed data conforming to the existing NSESnapshot interface (symbol, lastPrice, pChange, volume, oi, high, low, open). Also export a refreshMarketData() function that calls the backend's refreshMarketData() update method. Handle actor errors gracefully, returning null or empty arrays on failure.",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-52",
+      "summary": "Update frontend/src/hooks/useQueries.ts to fully replace any remaining random-walk or mock simulation logic with live data from the backend proxy. On app initialization call refreshMarketData() once to trigger a fresh NSE fetch, then call fetchFOStockList() and fetchAllIndices() to seed the central market data store. Set up a polling interval of every 5 seconds that calls refreshMarketData() followed by fetchFOStockList() and fetchAllIndices() to update the central store. All views (Dashboard, FOListView, WatchlistView, BullishScannerView, BearishScannerView, OptionChainView, SectorsView) must read from this central store so they all display the same live NSE prices simultaneously. Remove all Math.random() price mutation intervals from the data layer.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-53",
+      "summary": "Update OptionChainView.tsx to fetch live NSE option chain data via the backend proxy every 5 seconds when the view is active. For equity symbols use the backend's option chain query that proxies https://www.nseindia.com/api/option-chain-equities?symbol=<SYMBOL>; for indices (NIFTY, BANKNIFTY, FINNIFTY) use https://www.nseindia.com/api/option-chain-indices?symbol=<SYMBOL>. The backend must expose a getOptionChain(symbol: Text) query/update method that performs the HTTP outcall with NSE headers and returns the parsed strikes data. Parse the response to populate CE and PE rows with live LTP, IV, OI, change in OI (ΔOI), and volume. Recalculate Best CE / Best PE recommendation cards on each refresh based on highest live ΔOI values.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-54",
+      "summary": "Update the NSE live data status indicator in the Header component and Dashboard view to accurately reflect the backend proxy fetch status. Show 'NSE LIVE' with an animated blinking green dot when data was successfully fetched from the backend NSE proxy within the last 15 seconds. Show 'DELAYED' with an amber dot when the last successful fetch was between 15 and 60 seconds ago. Show 'OFFLINE' with a red dot when no successful fetch has occurred in over 60 seconds or when the backend returns an error. Display the exact timestamp of the last successful NSE data fetch next to the status badge.",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "JAAHNAVI",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
